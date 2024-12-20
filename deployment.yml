@@ -17,7 +17,7 @@ spec:
         image: my-image:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080  # Container listens on port 8080
+        - containerPort: 8082  # Container listens on port 8080
 
 ---
 apiVersion: v1
@@ -30,5 +30,5 @@ spec:
   ports:
     - protocol: TCP
       port: 8082         # Expose on port 8082
-      targetPort: 8080    # Container listens on port 8080
+      targetPort: 8082   # Container listens on port 8080
   type: NodePort         # Expose using NodePort
