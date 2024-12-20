@@ -15,6 +15,7 @@ spec:
       containers:
       - name: my-container
         image: my-image:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080  # Container listens on port 8080
 
