@@ -1,1 +1,56 @@
-
+pipeline{
+    
+    agent any
+    
+    tools{
+        maven 'maven'
+    }
+    
+    stages{
+        stage('Clone Repo')
+        {
+            steps{
+                git 'https://github.com/Rajeswari-kaakarla/star-agile-health-care.git'
+            }
+        }
+        stage('Test Code')
+        {
+            steps{
+                sh 'mvn test'
+            }
+        }
+        
+        stage('Build Code')
+        {
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('Build Image')
+        {
+            steps{
+                sh 'docker build -t kaakarla/healthcare:v1 .'
+            }
+        }
+        stage('Login to dockerhub and push the file'){
+            steps{
+                withCredentials([string(credentialsId: 'dockerhubpasswd', variable: 'dockerhub')]) {
+                    sh 'docker login -u kaakarla -p ${dockerhub}'
+                }
+            }
+        }
+        stage('push image to dockerhub'){
+          steps{
+               sh 'docker push kaakarla/healthcare:v1'
+           }
+        }
+        stage('Deploy to k8s'){
+            steps{
+                script{
+                     kubernetesDeploy (configs: 'deployment.yml' ,kubeconfigId: 'k8sconfigpasswd')
+                   
+                }
+            }
+        }
+    }
+}
